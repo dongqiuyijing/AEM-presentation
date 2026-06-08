@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AEM Oral Presentation</title>
+  <style>
+    :root {
+      --bg: #090512;
+      --purple: #7030a0;
+      --purple-dark: #3b145f;
+      --purple-soft: rgba(112, 48, 160, 0.24);
+      --purple-glow: rgba(112, 48, 160, 0.52);
+      --text: #fbf7ff;
+      --muted: #cfc3de;
+      --accent: #d8b4fe;
+      --accent-2: #a855f7;
+      --accent-3: #f0abfc;
+      --success: #86efac;
+      --warn: #fde68a;
+      --panel: rgba(255, 255, 255, 0.075);
+      --panel-strong: rgba(255, 255, 255, 0.13);
+      --shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--text);
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 16% 16%, rgba(112, 48, 160, 0.58), transparent 30%),
+        radial-gradient(circle at 82% 24%, rgba(216, 180, 254, 0.24), transparent 28%),
+        radial-gradient(circle at 48% 92%, rgba(168, 85, 247, 0.28), transparent 36%),
+        linear-gradient(135deg, #090512 0%, #170826 48%, #0d0617 100%);
+    }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 5.4vh 6.2vw;
+      opacity: 0;
+      transform: translateX(28px) scale(0.985);
+      transition: opacity 280ms ease, transform 280ms ease;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 3.2vh 3vw;
+      border: 1px solid rgba(216, 180, 254, 0.16);
+      border-radius: 32px;
+      pointer-events: none;
+      box-shadow: inset 0 0 70px rgba(112, 48, 160, 0.1);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 1.05rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+      font-weight: 800;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 1080px;
+      font-size: clamp(3rem, 6.2vw, 6.8rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    h2 {
+      font-size: clamp(2.2rem, 4.1vw, 4.7rem);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      margin-bottom: 1.8rem;
+    }
+
+    h3 {
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      margin-bottom: 0.7rem;
+    }
+
+    .subtitle {
+      margin-top: 1.7rem;
+      max-width: 930px;
+      color: var(--muted);
+      font-size: clamp(1.1rem, 1.75vw, 1.55rem);
+      line-height: 1.55;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .grid.two {
+      grid-template-columns: 1.04fr 0.96fr;
+      align-items: center;
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .card {
+      background:
+        linear-gradient(135deg, rgba(112, 48, 160, 0.2), rgba(255, 255, 255, 0.055));
+      border: 1px solid rgba(216, 180, 254, 0.18);
+      border-radius: 26px;
+      padding: 1.45rem;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .card strong {
+      color: white;
+    }
+
+    .big-number {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-size: clamp(2rem, 4vw, 4rem);
+      color: var(--accent-3);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.45vw, 1.35rem);
+      line-height: 1.65;
+    }
+
+    li::marker {
+      color: var(--accent-3);
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1.8rem;
+    }
+
+    .pill {
+      padding: 0.7rem 1rem;
+      border-radius: 999px;
+      color: #f5e8ff;
+      background: rgba(112, 48, 160, 0.28);
+      border: 1px solid rgba(216, 180, 254, 0.34);
+      font-weight: 800;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .flow-box {
+      min-height: 92px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 22px;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(112, 48, 160, 0.36), rgba(216, 180, 254, 0.11));
+      border: 1px solid rgba(216, 180, 254, 0.22);
+      font-size: clamp(1rem, 1.45vw, 1.35rem);
+      font-weight: 800;
+    }
+
+    .arrow {
+      color: var(--accent-3);
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .diagram {
+      width: 100%;
+      min-height: 310px;
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(112, 48, 160, 0.22), rgba(255, 255, 255, 0.035));
+      border: 1px solid rgba(216, 180, 254, 0.18);
+      padding: 1.2rem;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      min-height: 285px;
+    }
+
+    .bar-chart {
+      display: grid;
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 175px 1fr 92px;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .bar-track {
+      height: 20px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .bar {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #7030a0, #d8b4fe);
+    }
+
+    .bar.green {
+      background: linear-gradient(90deg, #a855f7, #f0abfc);
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+
+    .quote {
+      font-size: clamp(1.45rem, 2.6vw, 2.7rem);
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      color: white;
+      max-width: 980px;
+    }
+
+    .quote small {
+      display: block;
+      margin-top: 1.2rem;
+      color: var(--muted);
+      font-size: 1.15rem;
+      letter-spacing: 0;
+    }
+
+    .highlight {
+      color: var(--accent-3);
+    }
+
+    .success {
+      color: var(--success);
+    }
+
+    .footer {
+      position: fixed;
+      left: 6.2vw;
+      right: 6.2vw;
+      bottom: 3.2vh;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 0.95rem;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .progress {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      height: 5px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      z-index: 21;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #7030a0, #a855f7, #f0abfc);
+      transition: width 220ms ease;
+    }
+
+    .speaker-note {
+      display: none;
+    }
+
+    .note-toggle {
+      position: fixed;
+      right: 6.2vw;
+      top: 3.6vh;
+      z-index: 25;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 0.92rem;
+    }
+
+    body.show-notes .speaker-note {
+      display: block;
+      position: fixed;
+      left: 6.2vw;
+      right: 6.2vw;
+      bottom: 7.2vh;
+      z-index: 30;
+      padding: 1rem 1.2rem;
+      border-radius: 18px;
+      color: #fbf7ff;
+      background: rgba(9, 5, 18, 0.9);
+      border: 1px solid rgba(216, 180, 254, 0.34);
+      font-size: 1rem;
+      line-height: 1.55;
+      box-shadow: var(--shadow);
+    }
+
+    @media print {
+      body {
+        overflow: visible;
+        background: #090512;
+      }
+
+      .slide {
+        display: flex !important;
+        position: relative;
+        page-break-after: always;
+        height: 100vh;
+        opacity: 1;
+        transform: none;
+      }
+
+      .footer, .progress, .note-toggle {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <section class="slide active">
+      <div class="eyebrow">Robot Manipulation · Temporal Representation Pretraining</div>
+      <h1>Action-Effect Memory</h1>
+      <p class="subtitle">A compact memory pretraining framework that compresses long-horizon vision-action interaction history into a single temporal representation for downstream robot policies.</p>
+      <div class="pill-row">
+        <span class="pill">AEM</span>
+        <span class="pill">Mamba Encoder</span>
+        <span class="pill">Masked Autoencoding</span>
+        <span class="pill">One-Token Memory</span>
+      </div>
+      <aside class="speaker-note">Opening: Today I will present Action-Effect Memory, or AEM. The key idea is to pretrain a compact temporal memory for robot manipulation, instead of relying only on the current visual frame.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Background</div>
+      <h2>Single-frame visual encoding is not enough</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Manipulation is temporal</h3>
+          <ul>
+            <li>Robots often face occlusions, contact changes, and delayed environment responses.</li>
+            <li>The current observation may not reveal the true task state.</li>
+            <li>Similar images can correspond to different manipulation stages.</li>
+          </ul>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 760 360" role="img" aria-label="Current observation can be ambiguous without history">
+            <defs>
+              <linearGradient id="purpleItem" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7030a0"/>
+                <stop offset="100%" stop-color="#d8b4fe"/>
+              </linearGradient>
+            </defs>
+            <rect x="34" y="58" width="215" height="230" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(216,180,254,0.28)"/>
+            <rect x="274" y="58" width="215" height="230" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(216,180,254,0.28)"/>
+            <rect x="514" y="58" width="215" height="230" rx="28" fill="rgba(255,255,255,0.08)" stroke="rgba(216,180,254,0.28)"/>
+            <text x="142" y="104" text-anchor="middle" fill="#fbf7ff" font-size="24" font-weight="800">Past</text>
+            <text x="382" y="104" text-anchor="middle" fill="#fbf7ff" font-size="24" font-weight="800">Current Frame</text>
+            <text x="622" y="104" text-anchor="middle" fill="#fbf7ff" font-size="24" font-weight="800">Next Action</text>
+            <circle cx="142" cy="190" r="38" fill="url(#purpleItem)"/>
+            <path d="M112 247 C150 210 174 218 190 246" fill="none" stroke="#f0abfc" stroke-width="13" stroke-linecap="round"/>
+            <circle cx="382" cy="190" r="38" fill="url(#purpleItem)"/>
+            <path d="M352 247 C390 210 414 218 430 246" fill="none" stroke="#fde68a" stroke-width="13" stroke-linecap="round"/>
+            <text x="382" y="315" text-anchor="middle" fill="#cfc3de" font-size="20">Same frame, different stage</text>
+            <path d="M600 166 L650 166 L650 217 L600 217 Z" fill="url(#purpleItem)" opacity="0.92"/>
+            <path d="M249 173 L274 173" stroke="#d8b4fe" stroke-width="5" stroke-linecap="round"/>
+            <path d="M489 173 L514 173" stroke="#d8b4fe" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <aside class="speaker-note">Background: Most prior representation pretraining methods focus on single-frame visual encoding. However, manipulation is a sequential interaction process, so the current frame alone is often insufficient.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Problem</div>
+      <h2>Stacking history is costly and unstructured</h2>
+      <div class="compare">
+        <div class="card">
+          <h3>Direct history stacking</h3>
+          <ul>
+            <li>Input size grows with the history horizon.</li>
+            <li>Computation, memory usage, and latency all increase.</li>
+            <li>Temporal abstraction is left entirely to the downstream policy.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What AEM aims to learn</h3>
+          <ul>
+            <li>A memory built from vision-action interaction history.</li>
+            <li>A dense and compact representation with fixed size.</li>
+            <li>A temporal structure that captures action-state dependencies.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="flow-box">Long-horizon history<br>v1, a1 ... vL, aL</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">AEM Encoder</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">One compact memory m</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">Downstream policy</div>
+      </div>
+      <aside class="speaker-note">Motivation: The key question is not whether history is useful, but what form of memory robot manipulation actually needs. AEM learns a compact, action-conditioned memory during pretraining.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Core Idea</div>
+      <h2>Encode how actions change the world</h2>
+      <div class="grid three">
+        <div class="card">
+          <span class="big-number">1</span>
+          <h3>Vision + Action</h3>
+          <p class="muted">The memory is learned from interaction history, not visual observations alone.</p>
+        </div>
+        <div class="card">
+          <span class="big-number">2</span>
+          <h3>Compact</h3>
+          <p class="muted">AEM compresses the entire history into a fixed-size temporal state.</p>
+        </div>
+        <div class="card">
+          <span class="big-number">3</span>
+          <h3>Action-Effect</h3>
+          <p class="muted">Masked reconstruction encourages the memory to model action-conditioned state evolution.</p>
+        </div>
+      </div>
+      <p class="subtitle">In short, AEM pretrains a reusable memory that summarizes what happened and how the robot's actions affected the scene.</p>
+      <aside class="speaker-note">Core idea: AEM is not just compressing visual history. It explicitly includes actions, because in manipulation the world changes because the robot acts on it.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Method I</div>
+      <h2>Final vision token as a temporal bottleneck</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Single-vector memory</h3>
+          <ul>
+            <li>Visual and action features are projected into a shared token space.</li>
+            <li>They are interleaved in chronological order.</li>
+            <li>A Mamba encoder models the sequence context efficiently.</li>
+            <li>The encoded final vision token is reused as the compact history state.</li>
+          </ul>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 760 360" role="img" aria-label="Interleaved vision-action sequence encoded by Mamba">
+            <defs>
+              <linearGradient id="visionToken" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#d8b4fe"/>
+                <stop offset="100%" stop-color="#7030a0"/>
+              </linearGradient>
+              <linearGradient id="actionToken" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f0abfc"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+            <text x="380" y="48" text-anchor="middle" fill="#fbf7ff" font-size="25" font-weight="900">Interleaved Vision-Action Tokens</text>
+            <g transform="translate(50,90)">
+              <rect x="0" y="0" width="70" height="54" rx="14" fill="url(#visionToken)"/><text x="35" y="35" text-anchor="middle" fill="#12051f" font-size="21" font-weight="900">v1</text>
+              <rect x="82" y="0" width="70" height="54" rx="14" fill="url(#actionToken)"/><text x="117" y="35" text-anchor="middle" fill="#12051f" font-size="21" font-weight="900">a1</text>
+              <rect x="164" y="0" width="70" height="54" rx="14" fill="url(#visionToken)"/><text x="199" y="35" text-anchor="middle" fill="#12051f" font-size="21" font-weight="900">v2</text>
+              <rect x="246" y="0" width="70" height="54" rx="14" fill="url(#actionToken)"/><text x="281" y="35" text-anchor="middle" fill="#12051f" font-size="21" font-weight="900">a2</text>
+              <text x="360" y="36" text-anchor="middle" fill="#cfc3de" font-size="28">...</text>
+              <rect x="442" y="0" width="70" height="54" rx="14" fill="url(#visionToken)"/><text x="477" y="35" text-anchor="middle" fill="#12051f" font-size="21" font-weight="900">vL</text>
+              <rect x="524" y="0" width="70" height="54" rx="14" fill="url(#actionToken)"/><text x="559" y="35" text-anchor="middle" fill="#12051f" font-size="21" font-weight="900">aL</text>
+            </g>
+            <path d="M380 164 C380 186 380 196 380 216" stroke="#d8b4fe" stroke-width="6" stroke-linecap="round"/>
+            <rect x="190" y="216" width="380" height="64" rx="24" fill="rgba(112,48,160,0.34)" stroke="rgba(216,180,254,0.3)"/>
+            <text x="380" y="256" text-anchor="middle" fill="#fbf7ff" font-size="25" font-weight="900">Mamba Encoder</text>
+            <path d="M570 248 C640 248 644 300 594 310" fill="none" stroke="#f0abfc" stroke-width="6" stroke-linecap="round"/>
+            <rect x="512" y="292" width="170" height="54" rx="18" fill="rgba(216,180,254,0.18)" stroke="rgba(216,180,254,0.55)"/>
+            <text x="597" y="326" text-anchor="middle" fill="#fae8ff" font-size="23" font-weight="900">m = final v token</text>
+          </svg>
+        </div>
+      </div>
+      <aside class="speaker-note">Method: We interleave visual and action features and feed them into Mamba. Instead of adding a dedicated memory token, AEM uses the encoded final vision token as the compact history representation.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Method II</div>
+      <h2>Masked action-effect pretraining</h2>
+      <div class="grid two">
+        <div class="diagram">
+          <svg viewBox="0 0 760 360" role="img" aria-label="Masked action-effect pretraining">
+            <text x="380" y="42" text-anchor="middle" fill="#fbf7ff" font-size="25" font-weight="900">Aligned Time-Step Masking</text>
+            <g transform="translate(70,78)">
+              <rect x="0" y="0" width="104" height="76" rx="18" fill="rgba(112,48,160,0.28)" stroke="#d8b4fe"/>
+              <text x="52" y="31" text-anchor="middle" fill="#fae8ff" font-size="18" font-weight="800">v1</text>
+              <text x="52" y="58" text-anchor="middle" fill="#fae8ff" font-size="18" font-weight="800">a1</text>
+              <rect x="130" y="0" width="104" height="76" rx="18" fill="rgba(253,230,138,0.16)" stroke="#fde68a" stroke-dasharray="8 7"/>
+              <text x="182" y="45" text-anchor="middle" fill="#fde68a" font-size="18" font-weight="900">MASK</text>
+              <rect x="260" y="0" width="104" height="76" rx="18" fill="rgba(112,48,160,0.28)" stroke="#d8b4fe"/>
+              <text x="312" y="31" text-anchor="middle" fill="#fae8ff" font-size="18" font-weight="800">v3</text>
+              <text x="312" y="58" text-anchor="middle" fill="#fae8ff" font-size="18" font-weight="800">a3</text>
+              <text x="430" y="48" text-anchor="middle" fill="#cfc3de" font-size="27">...</text>
+              <rect x="500" y="0" width="104" height="76" rx="18" fill="rgba(216,180,254,0.2)" stroke="#f0abfc"/>
+              <text x="552" y="45" text-anchor="middle" fill="#fae8ff" font-size="18" font-weight="900">final v</text>
+            </g>
+            <path d="M380 172 L380 215" stroke="#d8b4fe" stroke-width="6" stroke-linecap="round"/>
+            <rect x="232" y="215" width="296" height="58" rx="21" fill="rgba(112,48,160,0.32)" stroke="rgba(216,180,254,0.28)"/>
+            <text x="380" y="252" text-anchor="middle" fill="#fbf7ff" font-size="22" font-weight="900">Decoder reconstructs masked pairs</text>
+            <path d="M300 282 C260 306 228 312 188 320" stroke="#fde68a" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M460 282 C500 306 532 312 572 320" stroke="#fde68a" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <text x="188" y="344" text-anchor="middle" fill="#fde68a" font-size="19">visual target</text>
+            <text x="572" y="344" text-anchor="middle" fill="#fde68a" font-size="19">action target</text>
+          </svg>
+        </div>
+        <div class="card">
+          <h3>Training objective</h3>
+          <ul>
+            <li>Mask visual and action tokens together at selected time steps.</li>
+            <li>Keep the final visual token visible as the compression anchor.</li>
+            <li>Decode masked vision-action pairs using only the compact memory as global context.</li>
+            <li>Optimize visual and action reconstruction with MSE plus cosine distance.</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="speaker-note">Training: AEM applies aligned masking at the time-step level. By reconstructing missing visual and action content from incomplete histories, the final token is encouraged to capture temporal dependencies and action effects.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Policy Integration</div>
+      <h2>A lightweight plug-in for downstream policies</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Standard visuomotor policy</h3>
+          <p class="quote">a<sub>t</sub> = π(v<sub>t</sub>, p<sub>t</sub>)</p>
+          <p class="muted">The policy mainly relies on the current visual feature and task condition.</p>
+        </div>
+        <div class="card">
+          <h3>AEM-enhanced policy</h3>
+          <p class="quote">a<sub>t</sub> = π(v<sub>t</sub>, m<sub>t</sub>, p<sub>t</sub>)</p>
+          <p class="muted">The policy receives temporal context through one pretrained memory vector.</p>
+        </div>
+      </div>
+      <div class="pill-row">
+        <span class="pill">Diffusion Policy</span>
+        <span class="pill">ManiFlow / Flow Policy</span>
+        <span class="pill">No growing history tokens</span>
+      </div>
+      <aside class="speaker-note">Integration: After pretraining, the AEM encoder is used to extract memory from the history window. This memory is concatenated with the current feature and passed to the same policy backbone.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Simulation Results</div>
+      <h2>AEM improves two policy families on RoboTwin2.0</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Average success rate on 11 tasks</h3>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span>DP</span>
+              <div class="bar-track"><div class="bar" style="width:29.8%"></div></div>
+              <strong>29.8%</strong>
+            </div>
+            <div class="bar-row">
+              <span>DP + AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:50.5%"></div></div>
+              <strong class="success">50.5%</strong>
+            </div>
+            <div class="bar-row">
+              <span>ManiFlow</span>
+              <div class="bar-track"><div class="bar" style="width:9.8%"></div></div>
+              <strong>9.8%</strong>
+            </div>
+            <div class="bar-row">
+              <span>ManiFlow + AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:29.1%"></div></div>
+              <strong class="success">29.1%</strong>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Takeaway</h3>
+          <ul>
+            <li>Diffusion Policy improves by <strong class="success">+20.7</strong> points on average.</li>
+            <li>ManiFlow improves by <strong class="success">+19.3</strong> points on average.</li>
+            <li>The gains show that AEM provides complementary temporal information rather than being tied to one policy architecture.</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="speaker-note">Results: On eleven RoboTwin2.0 tasks, AEM improves both DP and ManiFlow. This suggests that the learned memory is a general temporal representation for manipulation.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Efficiency</div>
+      <h2>Compact memory beats direct feature stacking</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Place Shoe comparison</h3>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span>DINOv2 Stack 16</span>
+              <div class="bar-track"><div class="bar" style="width:40%"></div></div>
+              <strong>40%</strong>
+            </div>
+            <div class="bar-row">
+              <span>DP + AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:76%"></div></div>
+              <strong class="success">76%</strong>
+            </div>
+            <div class="bar-row">
+              <span>Random Stack</span>
+              <div class="bar-track"><div class="bar" style="width:12%"></div></div>
+              <strong>12%</strong>
+            </div>
+            <div class="bar-row">
+              <span>Random AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:20%"></div></div>
+              <strong class="success">20%</strong>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Why it matters</h3>
+          <ul>
+            <li>DINOv2 16-frame stacking costs about <strong>57.8G</strong> FLOPs per step.</li>
+            <li>DP + AEM costs about <strong>41.7G</strong> FLOPs per step.</li>
+            <li>More frames do not automatically give better memory; structured pretraining does.</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="speaker-note">Efficiency: Directly stacking DINOv2 features increases computation but does not match AEM performance. This supports the claim that history should be compressed into an action-effect representation.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Memory-Dependent Tasks</div>
+      <h2>AEM is especially useful when the current frame is insufficient</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Non-Markovian evaluation</h3>
+          <ul>
+            <li>RMBench tasks such as Put Back Block and Swap Blocks require task-relevant memory.</li>
+            <li>The correct action depends on previous object states and interactions.</li>
+            <li>AEM provides a compact temporal cue for these decisions.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Randomized scene examples</h3>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span>Place Shoe DP</span>
+              <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+              <strong>8%</strong>
+            </div>
+            <div class="bar-row">
+              <span>Place Shoe AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:20%"></div></div>
+              <strong class="success">20%</strong>
+            </div>
+            <div class="bar-row">
+              <span>Handover DP</span>
+              <div class="bar-track"><div class="bar" style="width:12%"></div></div>
+              <strong>12%</strong>
+            </div>
+            <div class="bar-row">
+              <span>Handover AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:24%"></div></div>
+              <strong class="success">24%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="speaker-note">Memory tasks: When the current observation is ambiguous, AEM helps the policy retain task progress and previous interaction effects, which is especially important for non-Markovian manipulation.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Real-World Results</div>
+      <h2>AEM transfers to physical robot manipulation</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Standard setting</h3>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span>DP</span>
+              <div class="bar-track"><div class="bar" style="width:43.3%"></div></div>
+              <strong>43.3%</strong>
+            </div>
+            <div class="bar-row">
+              <span>DP + AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:81.7%"></div></div>
+              <strong class="success">81.7%</strong>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>With distractors</h3>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span>DP</span>
+              <div class="bar-track"><div class="bar" style="width:15%"></div></div>
+              <strong>15.0%</strong>
+            </div>
+            <div class="bar-row">
+              <span>DP + AEM</span>
+              <div class="bar-track"><div class="bar green" style="width:68.3%"></div></div>
+              <strong class="success">68.3%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="subtitle">The real-world tasks include Place Corn to Plate, Rotate Mouse Forward, and Put Block into Drawer. AEM remains robust when task-irrelevant objects are added to the scene.</p>
+      <aside class="speaker-note">Real world: On a Franka Emika robot with an external RealSense camera, AEM consistently improves success rates, especially under distractor objects.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Ablation Study</div>
+      <h2>What makes AEM work?</h2>
+      <div class="grid three">
+        <div class="card">
+          <h3>Fusion</h3>
+          <p class="muted">Concatenating memory with current visual features works better than simple feature addition.</p>
+        </div>
+        <div class="card">
+          <h3>Pretraining signal</h3>
+          <p class="muted">Reconstructing both observations and actions outperforms observation-only pretraining.</p>
+        </div>
+        <div class="card">
+          <h3>Feature choice</h3>
+          <p class="muted">DINOv2 CLS features provide the strongest compact memory in the reported ablation.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.2rem;">
+        <h3>Practical settings</h3>
+        <ul>
+          <li>A 32-step pretraining window and a 16-step inference history work best in the reported setup.</li>
+          <li>A 70% aligned time-step mask ratio gives the strongest downstream performance.</li>
+          <li>AEM should complement current perception, not replace it.</li>
+        </ul>
+      </div>
+      <aside class="speaker-note">Ablation: The results show that AEM benefits from action-aware pretraining, a sufficiently hard masking ratio, and using the memory jointly with the current observation.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">Conclusion</div>
+      <h2>Pretrain memory, not just perception</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Main contributions</h3>
+          <ul>
+            <li>A temporal representation pretraining paradigm for robot manipulation.</li>
+            <li>A compact final-token memory built from interleaved vision-action history.</li>
+            <li>A masked action-effect reconstruction objective for learning temporal dependencies.</li>
+            <li>Consistent improvements in simulation, randomized scenes, memory-dependent tasks, and real robots.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="quote">AEM shows that history does not have to enter a policy as more frames. It can be pretrained into a compact, transferable, action-aware memory.<small>Thank you!</small></p>
+        </div>
+      </div>
+      <aside class="speaker-note">Closing: AEM compresses long-horizon vision-action history into one memory vector and injects it into existing policies. This gives the policy temporal context with low interface cost.</aside>
+    </section>
+  </main>
+
+  <div class="note-toggle">Press N for speaker notes</div>
+  <div class="footer">
+    <span>Action-Effect Memory Pretraining for Robot Manipulation</span>
+    <span id="counter">1 / 12</span>
+  </div>
+  <div class="progress"><span id="progressBar"></span></div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.getElementById("counter");
+    const progressBar = document.getElementById("progressBar");
+    let index = 0;
+
+    function showSlide(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === index);
+      });
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      window.location.hash = `slide-${index + 1}`;
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      if (key === "arrowright" || key === " " || key === "pagedown") {
+        event.preventDefault();
+        showSlide(index + 1);
+      }
+      if (key === "arrowleft" || key === "pageup") {
+        event.preventDefault();
+        showSlide(index - 1);
+      }
+      if (key === "home") showSlide(0);
+      if (key === "end") showSlide(slides.length - 1);
+      if (key === "f") toggleFullscreen();
+      if (key === "n") document.body.classList.toggle("show-notes");
+      if (key === "p") window.print();
+    });
+
+    document.addEventListener("click", (event) => {
+      const leftSide = event.clientX < window.innerWidth * 0.28;
+      showSlide(index + (leftSide ? -1 : 1));
+    });
+
+    const hashMatch = window.location.hash.match(/slide-(\d+)/);
+    if (hashMatch) {
+      showSlide(Number(hashMatch[1]) - 1);
+    } else {
+      showSlide(0);
+    }
+  </script>
+</body>
+</html>
